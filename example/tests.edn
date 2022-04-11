@@ -1,0 +1,5 @@
+{:kaocha/tests                       [{:kaocha.testable/type :danieroux.type/transcriptor
+                                       :kaocha.testable/id   :transcriptor
+                                       :kaocha/test-paths    ["test"]}]
+ :kaocha/color?                      true
+ :kaocha/reporter                    [kaocha.report/dots]}
