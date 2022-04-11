@@ -66,16 +66,16 @@
           :kaocha.result/count 1
           :kaocha.result/pass @*asserts*
           :kaocha.result/fail 0
-          :koacha.result/out (str sw)))
-      (catch ExceptionInfo ex
-        (binding [kaocha.testable/*test-location* (file-line-m ex)]
-          (t/do-report {:type ::fail-repl-file}))
-        (assoc testable
-          :kaocha.result/count 1
-          :kaocha.result/pass @*asserts*
-          :kaocha.result/fail 1
-          :koacha.result/out (str sw)
-          :koacha.result/err (ex-message ex))))))
+          :koacha.result/out (str sw))
+        (catch ExceptionInfo ex
+          (binding [kaocha.testable/*test-location* (file-line-m ex)]
+            (t/do-report {:type ::fail-repl-file}))
+          (assoc testable
+            :kaocha.result/count 1
+            :kaocha.result/pass @*asserts*
+            :kaocha.result/fail 1
+            :koacha.result/out (str sw)
+            :koacha.result/err (ex-message ex)))))))
 
 (s/def :danieroux.type/transcriptor (s/keys :req [:kaocha/test-paths]))
 (s/def :danieroux.type/transcriptor-repl-file (s/keys :req [::repl-file]))
