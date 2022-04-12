@@ -1,6 +1,6 @@
 # What is this
 
-A [Koacha](https://github.com/lambdaisland/kaocha) plugin for [Transcriptor](https://github.com/cognitect-labs/transcriptor)
+A [Koacha](https://github.com/lambdaisland/kaocha) test type for [Transcriptor](https://github.com/cognitect-labs/transcriptor). It enables Koacha to be a test runner for the Transcriptor `.repl` files.
 
 # How do I use it
 
