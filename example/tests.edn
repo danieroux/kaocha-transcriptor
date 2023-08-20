@@ -1,7 +1,10 @@
 {:kaocha/tests                                   [{:kaocha.testable/type :danieroux.type/transcriptor
                                                    :kaocha.testable/id   :transcriptor
                                                    :kaocha/test-paths    ["test"]}]
- :kaocha/plugins                                 [:kaocha.plugin/junit-xml]
+ :kaocha/plugins                                 [:kaocha.plugin/filter
+                                                  :kaocha.plugin/junit-xml]
+ ; This will stop a `junit.xml` from being generated
+ ;:kaocha/fail-fast?                              true
  :kaocha.plugin.junit-xml/target-file            "junit.xml"
  :kaocha.plugin.junit-xml/add-location-metadata? true
  :kaocha/color?                                  true

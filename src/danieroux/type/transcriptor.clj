@@ -7,8 +7,7 @@
 
             [kaocha.hierarchy]
             [kaocha.testable])
-  (:import [clojure.lang ExceptionInfo]
-           [java.io StringWriter]))
+  (:import [java.io StringWriter]))
 
 (def ^:dynamic *asserts*)
 
@@ -36,10 +35,11 @@
       (assoc :kaocha.test-plan/tests
         (map
           (fn [repl-file]
-            {:kaocha.testable/type :danieroux.type/transcriptor-repl-file
-             :kaocha.testable/id (keyword repl-file)
-             :kaocha.testable/desc repl-file
-             ::repl-file repl-file})
+            (let [the-repl-file-ns   (second (read-string (slurp repl-file)))]
+              {:kaocha.testable/type :danieroux.type/transcriptor-repl-file
+               :kaocha.testable/id (keyword the-repl-file-ns)
+               :kaocha.testable/desc repl-file
+               ::repl-file repl-file}))
           repl-files))
       (dissoc :kaocha/tests))))
 
