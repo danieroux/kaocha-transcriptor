@@ -1,6 +1,0 @@
-(ns acme.do-things-test-too
-  (:require
-    [acme.do-things :refer :all]))
-
-;; Will throw an exception and report on the origin of that exception
-(do-things-exceptionally-badly)

@@ -1,0 +1,6 @@
+(ns acme.do-things-test-triggering-ex-info-exception
+  (:require
+    [acme.do-things :refer :all]))
+
+(println "Will throw an ex-info exception and report on the origin of that exception, and this output should be captured.")
+(do-things-exceptionally-badly)

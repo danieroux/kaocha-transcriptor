@@ -56,8 +56,9 @@
   (let [repl-file   (::repl-file testable)
         file-line-m (fn file-line-m [ex]
                       (zipmap [:file :line] (take-last 2 (:at (first (:via (Throwable->map ex)))))))
-        sw          (StringWriter.)]
-    (binding [*out*     sw
+        the-out-captured-by-kaocha *out*
+        sw (StringWriter.)]
+    (binding [*out* sw
               *asserts* (atom 0)]
       (try
         (xr/run repl-file)
@@ -65,16 +66,20 @@
         (assoc testable
           :kaocha.result/count 1
           :kaocha.result/pass @*asserts*
-          :kaocha.result/fail 0
-          :koacha.result/out (str sw))
-        (catch ExceptionInfo ex
-          (binding [kaocha.testable/*test-location* (file-line-m ex)]
-            (t/do-report {:type ::fail-repl-file}))
+          :kaocha.result/fail 0)
+        (catch Exception ex
+          (binding [kaocha.testable/*test-location* (file-line-m ex)
+                    *out* the-out-captured-by-kaocha]
+            (let [message (ex-message ex)
+                  actual (or (ex-data ex) ex)]
+              (t/do-report {:type    ::fail-repl-file-test
+                            :message message
+                            :actual actual})
+              (print (str sw))))
           (assoc testable
             :kaocha.result/count 1
             :kaocha.result/pass @*asserts*
             :kaocha.result/fail 1
-            :koacha.result/out (str sw)
             :koacha.result/err (ex-message ex)))))))
 
 (s/def :danieroux.type/transcriptor (s/keys :req [:kaocha/test-paths]))
@@ -87,7 +92,7 @@
 (kaocha.hierarchy/derive! ::end-run :kaocha/end-suite)
 
 (kaocha.hierarchy/derive! ::begin-repl-file :kaocha/begin-test)
-(kaocha.hierarchy/derive! ::fail-repl-file :kaocha/fail-type)
+(kaocha.hierarchy/derive! ::fail-repl-file-test :kaocha/fail-type)
 (kaocha.hierarchy/derive! ::end-repl-file :kaocha/end-test)
 
 (comment

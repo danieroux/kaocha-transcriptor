@@ -1,5 +1,8 @@
-{:kaocha/tests                       [{:kaocha.testable/type :danieroux.type/transcriptor
-                                       :kaocha.testable/id   :transcriptor
-                                       :kaocha/test-paths    ["test"]}]
- :kaocha/color?                      true
- :kaocha/reporter                    [kaocha.report/dots]}
+{:kaocha/tests                                   [{:kaocha.testable/type :danieroux.type/transcriptor
+                                                   :kaocha.testable/id   :transcriptor
+                                                   :kaocha/test-paths    ["test"]}]
+ :kaocha/plugins                                 [:kaocha.plugin/junit-xml]
+ :kaocha.plugin.junit-xml/target-file            "junit.xml"
+ :kaocha.plugin.junit-xml/add-location-metadata? true
+ :kaocha/color?                                  true
+ :kaocha/reporter                                [kaocha.report/dots]}

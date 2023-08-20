@@ -1,0 +1,13 @@
+(ns acme.do-things-passing
+  (:require
+    [clojure.spec.alpha :as s]
+    ;; This is purely to track successful `check!` calls as an assert. It adds no other benefit
+    ; For this .repl file, you will get: 1 tests, 3 assertions, 1 failures
+    [danieroux.type.transcriptor :refer [check!]]
+    ;; Using this require, you will get: 1 tests, 1 assertions, 1 failures.
+    ;[cognitect.transcriptor :refer [check!]]
+    [acme.do-things :refer :all]))
+
+(check! (s/keys :req [:acme.things/done]) (do-things))
+(check! #{3} (count (:acme.things/done (do-things))))
+(println "You should not see this as output, because this tests are passing.")
