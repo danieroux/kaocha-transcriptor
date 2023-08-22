@@ -67,7 +67,9 @@
           :kaocha.result/count 1
           :kaocha.result/pass @*asserts*
           :kaocha.result/fail 0)
-        (catch Exception ex
+        ; Because (assert) throws AssertionError, we have to catch this high
+        ; Does not spark joy.
+        (catch Throwable ex
           (binding [kaocha.testable/*test-location* (file-line-m ex)
                     *out* the-out-captured-by-kaocha]
             (let [message (ex-message ex)
