@@ -11,7 +11,7 @@
 
 (def ^:dynamic *asserts*)
 
-(defmacro check!!
+(defmacro check!
   "Delegate to `transcriptor/check!` and on success, mark it as a passing assert.
 
   This only exists for more granular reporting:
