@@ -18,14 +18,20 @@
 
   You could also just use `transcriptor/check!` directly, in which case one .repl file will
   count as one test, with no assertions."
-  ([spec]
-   `(check! ~spec *1))
-  ([spec v]
-   `(do
-      (xr/check! ~spec ~v)
-      (when (bound? #'*asserts*)
-        (swap! *asserts* inc))
-      (t/do-report {:type :pass}))))
+  {:arglists '([docstring? spec]
+               [docstring? spec v])}
+  ([& args]
+   (let [has-doc? (string? (first args))
+         args' (if has-doc? (rest args) args)
+         has-v? (> (count args') 1)
+         [spec v] args']
+     (if-not has-v?
+       `(check! ~spec *1)
+       `(do
+          (xr/check! ~spec ~v)
+          (when (bound? #'*asserts*)
+            (swap! *asserts* inc))
+          (t/do-report {:type :pass}))))))
 
 (defmethod kaocha.testable/-load :danieroux.type/transcriptor [testable]
   (let [test-paths (:kaocha/test-paths testable)
