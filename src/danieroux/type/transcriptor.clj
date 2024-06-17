@@ -2,7 +2,7 @@
   (:require [clojure.spec.alpha :as s]
             [clojure.test :as t]
 
-            ;; https://github.com/cognitect-labs/transcriptor
+   ;; https://github.com/cognitect-labs/transcriptor
             [cognitect.transcriptor :as xr]
 
             [kaocha.hierarchy]
@@ -22,8 +22,8 @@
                [docstring? spec v])}
   ([& args]
    (let [has-doc? (string? (first args))
-         args' (if has-doc? (rest args) args)
-         has-v? (> (count args') 1)
+         args'    (if has-doc? (rest args) args)
+         has-v?   (> (count args') 1)
          [spec v] args']
      (if-not has-v?
        `(check! ~spec *1)
@@ -34,18 +34,21 @@
           (t/do-report {:type :pass}))))))
 
 (defmethod kaocha.testable/-load :danieroux.type/transcriptor [testable]
-  (let [test-paths (:kaocha/test-paths testable)
-        repl-files (mapcat xr/repl-files test-paths)]
+  (let [test-paths   (:kaocha/test-paths testable)
+        file-pattern (or
+                       (re-pattern (:danieroux.type.transcriptor/file-pattern testable))
+                       #".*")
+        repl-files   (filter #(re-matches file-pattern %) (mapcat xr/repl-files test-paths))]
     (-> testable
       (assoc :kaocha.testable/desc "Transcriptor Tests")
       (assoc :kaocha.test-plan/tests
         (map
           (fn [repl-file]
-            (let [the-repl-file-ns   (second (read-string (slurp repl-file)))]
+            (let [the-repl-file-ns (second (read-string (slurp repl-file)))]
               {:kaocha.testable/type :danieroux.type/transcriptor-repl-file
-               :kaocha.testable/id (keyword the-repl-file-ns)
+               :kaocha.testable/id   (keyword the-repl-file-ns)
                :kaocha.testable/desc repl-file
-               ::repl-file repl-file}))
+               ::repl-file           repl-file}))
           repl-files))
       (dissoc :kaocha/tests))))
 
@@ -59,12 +62,12 @@
 
 (defmethod kaocha.testable/-run :danieroux.type/transcriptor-repl-file [testable _test-plan]
   (t/do-report {:type ::begin-repl-file})
-  (let [repl-file   (::repl-file testable)
-        file-line-m (fn file-line-m [ex]
-                      (zipmap [:file :line] (take-last 2 (:at (first (:via (Throwable->map ex)))))))
+  (let [repl-file                  (::repl-file testable)
+        file-line-m                (fn file-line-m [ex]
+                                     (zipmap [:file :line] (take-last 2 (:at (first (:via (Throwable->map ex)))))))
         the-out-captured-by-kaocha *out*
-        sw (StringWriter.)]
-    (binding [*out* sw
+        sw                         (StringWriter.)]
+    (binding [*out*     sw
               *asserts* (atom 0)]
       (try
         (xr/run repl-file)
@@ -77,12 +80,12 @@
         ; Does not spark joy.
         (catch Throwable ex
           (binding [kaocha.testable/*test-location* (file-line-m ex)
-                    *out* the-out-captured-by-kaocha]
+                    *out*                           the-out-captured-by-kaocha]
             (let [message (ex-message ex)
-                  actual (or (ex-data ex) ex)]
+                  actual  (or (ex-data ex) ex)]
               (t/do-report {:type    ::fail-repl-file-test
                             :message message
-                            :actual actual})
+                            :actual  actual})
               (print (str sw))))
           (assoc testable
             :kaocha.result/count 1
