@@ -33,6 +33,18 @@
             (swap! *asserts* inc))
           (t/do-report {:type :pass}))))))
 
+(defmacro checking
+  "A grouping macro, exists to group together a set of check!'s into a logical group.
+
+  Does not change functionality."
+  [_docsting & body]
+  `(do ~@body))
+
+(defn stop!
+  "Stops the linear execution of the .repl file, dev convenience to be used while developing."
+  []
+  (throw (ex-info "Stopping for dev inspection" {})))
+
 (defmethod kaocha.testable/-load :danieroux.type/transcriptor [testable]
   (let [test-paths   (:kaocha/test-paths testable)
         file-pattern (or
